@@ -6,8 +6,7 @@ namespace TicTacToe
     {
         private string playerName;
         private Random rand = new Random();
-        private bool isPlayerXTurn = true;
-        private string playerMarker, computerMarker;
+        private bool turn = true; // true = player's turn, false = computer's turn 
 
         public Form1()
         {
@@ -34,9 +33,34 @@ namespace TicTacToe
             // Display the greeting message with name on form
             greetingLabel.Text = ($"Welcome, {playerName}! Let's play Tic Tac Toe!");
 
+            // Determine first player
+            FirstPlayer();
+
             // Start the game (enables Tic Tac Toe board)
             StartGame();
         }
+
+        private void button_Click(object sender, EventArgs e)
+        {
+            if (!turn) return; // player can't input during computer's turn
+
+            Button button = (Button)sender;
+
+            if (turn)
+                button.Text = "X";
+            else
+                button.Text = "O";
+
+            turn = !turn;
+            button.Enabled = false; // Disables the button
+        }
+
+        private void ComputerMove()
+        {
+            if (turn) return;
+
+
+         }
 
         private void exitBtn_Click(object sender, EventArgs e)
         {
@@ -51,6 +75,8 @@ namespace TicTacToe
 
         }
 
+
+
         /// <summary>
         /// Enbles Tic Tac Toe board
         /// 
@@ -58,10 +84,6 @@ namespace TicTacToe
         /// </summary>
         private void StartGame()
         {
-            // Determine first player
-            FirstPlayer();
-
-            if (!isPlayerXTurn) return; // player can't input during computer's turn
 
         }
 
@@ -73,26 +95,21 @@ namespace TicTacToe
 
             // playerName is first if generate 0, 
             // else generated 1 and computer is first 
-            if (isPlayerXTurn = rand.Next(2) == 0) // equal chance of turn
+            if (turn = rand.Next(2) == 0) // equal chance of turn
             {
-                isPlayerXTurn = true;
-                playerMarker = "X";
-                computerMarker = "O";
-                greetingLabel.Text = $"{playerName} goes first as X.";
+                turn = true;
+                playerTurnLabel.Text = $"{playerName} goes first as X.";
             }
             else
             {
-                isPlayerXTurn = false;
-                computerMarker = "X";
-                playerName = "O";
-                greetingLabel.Text = "Computer goes first as X.";
+                turn = false;
+                playerTurnLabel.Text = "Computer goes first as X.";
                 ComputerMove();
             }
         }
 
-        private void ComputerMove()
-        {
-            
-        }
+        
+
+       
     }
 }
