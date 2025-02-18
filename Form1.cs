@@ -7,6 +7,7 @@ namespace TicTacToe
         private string playerName;
         private Random rand = new Random();
         private bool turn = true; // true = player's turn, false = computer's turn 
+        private bool isPlayerXTurn = true; 
 
         public Form1()
         {
@@ -36,32 +37,48 @@ namespace TicTacToe
             // Determine first player
             FirstPlayer();
 
-            // Start the game (enables Tic Tac Toe board)
-            StartGame();
         }
 
         private void button_Click(object sender, EventArgs e)
         {
-            if (!turn) return; // player can't input during computer's turn
+            if (!isPlayerXTurn) return; // player can't input during computer's turn
 
             Button button = (Button)sender;
-
-            if (turn)
-                button.Text = "X";
-            else
-                button.Text = "O";
+            if (button.Text != "") return; // prevent multiple moves on the same cell
+            
+            button.Text = "X";
+            isPlayerXTurn = false;
+            playerName = "O";
 
             turn = !turn;
             button.Enabled = false; // Disables the button
+            ComputerMove();
         }
 
+        /// <summary>
+        /// Computer randomly select an available button and marks
+        /// </summary>
         private void ComputerMove()
         {
-            if (turn) return;
+            if (turn) return; // computer's can't input during players's turn
 
+            List<Button> buttons = new List<Button> { button1, button2, button3, button4,
+            button5, button6, button7,  button8, button9 };
 
+            int number;
+            do
+            {
+                number = rand.Next(9);
+            } while (buttons[number].Text != "");
+            
+            buttons[number].Text = "O";
+            isPlayerXTurn = true;
+            playerName = "X";
+ 
 
-         }
+            turn = !turn;
+            buttons[number].Enabled = false; // Disables the button
+        }
 
         private void exitBtn_Click(object sender, EventArgs e)
         {
@@ -76,18 +93,6 @@ namespace TicTacToe
 
         }
 
-
-
-        /// <summary>
-        /// Enbles Tic Tac Toe board
-        /// 
-        /// 
-        /// </summary>
-        private void StartGame()
-        {
-
-        }
-
         /// <summary>
         /// Randomly generates first player and assign them as X
         /// </summary>
@@ -96,13 +101,14 @@ namespace TicTacToe
 
             // playerName is first if generate 0, 
             // else generated 1 and computer is first 
-            if (turn = rand.Next(2) == 0) // equal chance of turn
+            if (isPlayerXTurn = rand.Next(2) == 0) // equal chance of turn
             {
-                turn = true;
+                isPlayerXTurn = true;
                 playerTurnLabel.Text = $"{playerName} goes first as X.";
             }
             else
             {
+                isPlayerXTurn = false;
                 turn = false;
                 playerTurnLabel.Text = "Computer goes first as X.";
                 ComputerMove();
